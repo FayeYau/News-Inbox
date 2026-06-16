@@ -272,3 +272,20 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+import os
+import requests
+
+# 读取环境变量中的推送地址
+webhook_url = os.getenv("PUSH_WEBHOOK")
+
+def send_msg(content):
+    # 你的推送逻辑，比如钉钉/企业微信/Server酱
+    requests.post(webhook_url, json={"text": content})
+
+# 东方财富数据获取逻辑
+# ...
+
+if __name__ == "__main__":
+    data = get_eastmoney_data()
+    send_msg(data)
