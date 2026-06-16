@@ -1,3 +1,5 @@
+import os
+import pandas as pd
 import akshare as ak
 from openai import OpenAI
 import requests
@@ -13,6 +15,14 @@ WATCHLIST_STOCKS = ["000796", "601888", "002797"]
 # 各榜单展示数量
 TOP_N = 5
 # =====================================================
+
+# 启动前置校验：避免密钥为空时报错不明确
+if not DEEPSEEK_API_KEY:
+    print("❌ 错误：未读取到 DEEPSEEK_API_KEY 环境变量，请检查GitHub Secrets配置")
+    exit(1)
+if not SERVERCHAN_SENDKEY:
+    print("❌ 错误：未读取到 SERVERCHAN_SENDKEY 环境变量，请检查GitHub Secrets配置")
+    exit(1)
 
 def get_index_data():
     """获取四大核心大盘指数实时表现"""
@@ -190,7 +200,8 @@ def generate_analysis(index_data, news, market, industry, flow, lhb, margin, wat
     """调用DeepSeek生成完整每日策略报告"""
     client = OpenAI(
         api_key=DEEPSEEK_API_KEY,
-        base_url="https://api.deepseek.com/v1"
+        base_url="https://api.deepseek.com/v1",
+        timeout=60  # 增加超时时间，避免长时间卡住
     )
     
     prompt = f"""
@@ -241,7 +252,7 @@ def push_to_wechat(content):
     data = {"title": title, "desp": content}
     
     try:
-        res = requests.post(url, data=data)
+        res = requests.post(url, data=data, timeout=10)
         result = res.json()
         if result.get("code") == 0:
             print("✅ 微信推送成功")
@@ -260,11 +271,11 @@ def main():
     lhb = get_lhb_data()
     margin = get_margin_data()
     watchlist = get_watchlist_data()
-    print("数据采集完成")
+    print("✅ 数据采集完成")
     
     print("🤖 正在生成策略分析报告...")
     report = generate_analysis(index_data, news, market, industry, flow, lhb, margin, watchlist)
-    print("报告生成完成")
+    print("✅ 报告生成完成")
     
     print("📤 正在推送至微信...")
     push_to_wechat(report)
@@ -272,20 +283,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-import os
-import requests
-
-# 读取环境变量中的推送地址
-webhook_url = os.getenv("PUSH_WEBHOOK")
-
-def send_msg(content):
-    # 你的推送逻辑，比如钉钉/企业微信/Server酱
-    requests.post(webhook_url, json={"text": content})
-
-# 东方财富数据获取逻辑
-# ...
-
-if __name__ == "__main__":
-    data = get_eastmoney_data()
-    send_msg(data)
