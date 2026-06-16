@@ -4,8 +4,8 @@ import requests
 from datetime import datetime
 
 # ====================== 配置区域 ======================
-DEEPSEEK_API_KEY = ""
-SERVERCHAN_SENDKEY = ""
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+SERVERCHAN_SENDKEY = os.getenv("SERVERCHAN_SENDKEY")
 MODEL_NAME = "deepseek-v4-pro"
 
 # 关注标的股票代码（6位数字，可自行增减）
