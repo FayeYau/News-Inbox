@@ -28,10 +28,10 @@ jobs:
           pip install -r requirements.txt
 
       # 4. 运行你的Python脚本
-    - name: 执行推送脚本
-  env:
-    # 注入 DeepSeek 密钥
-    DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-    # 注入 Server 酱 SendKey
-    SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
-  run: python "东方财富脚本（使用版）.py"
+      - name: 执行推送脚本
+        env:
+          # 注入 DeepSeek 密钥
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          # 注入 Server 酱 SendKey
+          SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
+        run: python "东方财富脚本（使用版）.py"
