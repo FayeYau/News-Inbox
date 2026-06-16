@@ -32,4 +32,4 @@ jobs:
         env:
           # 注入敏感环境变量，和后面第四步的Secrets名称对应
           PUSH_WEBHOOK: ${{ secrets.PUSH_WEBHOOK }}
-        run: python “东方财富脚本（使用版）.py“  # 改成你的脚本文件名
+        run: python "东方财富脚本（使用版）.py"  # 改成你的脚本文件名
